@@ -4,7 +4,6 @@ import {createUserApi} from "../util/api.js";
 import {useNavigate} from "react-router-dom";
 
 
-
 const RegisterPage = () => {
     const navigate = useNavigate();
     const onFinish = async (values) => {
