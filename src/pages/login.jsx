@@ -2,9 +2,11 @@ import React from 'react';
 import {Button, Form, Input, notification} from 'antd';
 import {loginApi} from "../util/api.js";
 import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../components/context/auth.context.jsx";
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const {setAuth} = React.useContext(AuthContext);
     const onFinish = async (values) => {
         const {email, password} = values;
         const res = await loginApi( email, password);
@@ -15,6 +17,14 @@ const LoginPage = () => {
             notification.success({
                 message: 'Login Successful',
                 description: 'You can now log in.',
+            });
+            // Set auth context
+            setAuth({
+                isAuthenticated: true,
+                user: {
+                    name: res?.user?.name ?? "", // Assuming the response contains user name
+                    email: res?.user?.email ?? "", // Assuming the response contains user email
+                }, // Assuming the response contains user data
             });
             // Redirect to home page after successful registration
             navigate('/');

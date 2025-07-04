@@ -1,39 +1,51 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import {  MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import {Link, useNavigate} from "react-router-dom";
+import {AuthContext} from "../context/auth.context.jsx";
 
 const Header = () => {
     const navigate = useNavigate();
+    const {auth, setAuth} = useContext(AuthContext);
+    console.log("check auth context", auth);
     const items = [
         {
             label: <Link to={"/"}>Home Page</Link>,
             key: 'home',
             icon: <MailOutlined />,
         },
-        {
-            label: <Link to={"/user"}>Users</Link>,
-            key: 'user',
-            icon: <MailOutlined />,
-        },
+        ...(auth.isAuthenticated ? [
+            {
+                label: <Link to={"/user"}>Users</Link>,
+                key: 'user',
+                icon: <MailOutlined />,
+            }] : [] ),
 
-
         {
-            label: 'Welcome Wang',
+            label: `Welcome ${auth?.user?.email ?? ""}`,
             key: 'SubMenu',
             icon: <SettingOutlined />,
             children: [
-                {
-                    label: <Link to={"/login"}>Login</Link>,
-                    key: 'login',
-                },
-                {
-                    label: <span onClick={() => {localStorage.clear('accessToken');
-                    navigate('/');
-                    }}>Đăng xuất</span>,
-                    key: 'logout',
-                }
-
+                ...(auth.isAuthenticated ? [
+                    {
+                        label: <span onClick={() => {localStorage.clear('accessToken');
+                            setCurrent("home");
+                            setAuth({
+                                isAuthenticated: false,
+                                user: {
+                                    name: '',
+                                    email: ''
+                                }
+                            })
+                            navigate('/');
+                        }}>Đăng xuất</span>,
+                        key: 'logout',
+                    }] : [
+                    {
+                        label: <Link to={"/login"}>Login</Link>,
+                        key: 'login',
+                    },
+                ] ),
             ],
         },
     ];
