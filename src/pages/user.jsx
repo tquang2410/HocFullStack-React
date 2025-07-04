@@ -1,4 +1,4 @@
-import {Table} from "antd";
+import {notification, Table} from "antd";
 import {useEffect, useState} from "react";
 import {getUserApi} from "../util/api.js";
 
@@ -7,10 +7,15 @@ const UserPage = () => {
     useEffect(() => {
         const fetchUser = async () => {
             const res = await getUserApi();
-            if(res) {
+            if(!res?.message) {
                 setDataSource(res);
             } else {
-                console.error('Failed to fetch users');
+                notification.error(
+                    {
+                        message: 'Unauthorized',
+                        description: res?.message || 'You are not authorized to view this page.',
+                    }
+                );
             }
         }
         fetchUser();
