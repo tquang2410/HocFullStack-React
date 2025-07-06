@@ -8,7 +8,7 @@ const UserPage = () => {
         const fetchUser = async () => {
             const res = await getUserApi();
             if(!res?.message) {
-                setDataSource(res);
+                setDataSource(Array.isArray(res) ? res : []);
             } else {
                 notification.error(
                     {
@@ -16,6 +16,7 @@ const UserPage = () => {
                         description: res?.message || 'You are not authorized to view this page.',
                     }
                 );
+                setDataSource([]); // clear data if unauthorized or error
             }
         }
         fetchUser();
